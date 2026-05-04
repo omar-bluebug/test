@@ -1,7 +1,8 @@
 name: Run Download Success Notebook
+
 on:
   schedule:
-    - cron: "40 15 * * *"
+    - cron: "47 15 * * *"   # 10:00 AM Cairo during UTC+3
   workflow_dispatch:
 
 permissions:
@@ -13,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
@@ -31,7 +32,7 @@ jobs:
         run: |
           jupyter nbconvert \
             --to notebook \
-            --execute test.ipynb \
+            --execute download_success_image.ipynb \
             --output executed_download_success_image.ipynb \
             --ExecutePreprocessor.timeout=120
 
@@ -40,14 +41,14 @@ jobs:
           ls -lh success.jpg
 
       - name: Upload downloaded image
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: success-image
           path: success.jpg
           if-no-files-found: error
 
       - name: Upload executed notebook
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: executed-notebook
           path: executed_download_success_image.ipynb
