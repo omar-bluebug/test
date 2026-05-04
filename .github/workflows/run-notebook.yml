@@ -1,7 +1,7 @@
 name: Run Download Success Notebook
 on:
   schedule:
-    - cron: "36 16 * * *"
+    - cron: "40 15 * * *"
   workflow_dispatch:
 
 permissions:
