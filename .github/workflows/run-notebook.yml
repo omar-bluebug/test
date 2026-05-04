@@ -1,0 +1,53 @@
+name: Run Download Success Notebook
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests nbconvert ipykernel
+          python -m ipykernel install --user --name python3
+
+      - name: Run notebook
+        run: |
+          jupyter nbconvert \
+            --to notebook \
+            --execute test.ipynb \
+            --output executed_download_success_image.ipynb \
+            --ExecutePreprocessor.timeout=120
+
+      - name: Check image exists
+        run: |
+          ls -lh success.jpg
+
+      - name: Upload downloaded image
+        uses: actions/upload-artifact@v7
+        with:
+          name: success-image
+          path: success.jpg
+          if-no-files-found: error
+
+      - name: Upload executed notebook
+        uses: actions/upload-artifact@v7
+        with:
+          name: executed-notebook
+          path: executed_download_success_image.ipynb
+          if-no-files-found: error
